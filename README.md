@@ -65,7 +65,7 @@ This information can be useful for logging and troubleshooting.
 
 #### Simple brut force approach
 
-If you simply one to set the value of a flag to `true` or `false` at test time, without relaying on existing custom permissions or metadata types, simply use the static `FeatureFlags.setMockValue('mockedFeatureValue', true);` method, as follows
+If you simply want to set the value of a flag to `true` or `false` at test time, without relaying on existing custom permissions or metadata types, simply use the static `FeatureFlags.setMockValue('mockedFeatureValue', true);` method, as follows
 
 ```java
 @IsTest 
