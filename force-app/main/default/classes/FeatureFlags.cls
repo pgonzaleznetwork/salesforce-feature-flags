@@ -11,15 +11,18 @@ public with sharing class FeatureFlags {
         }
     }
     
-    public static FeatureEvaluationResult isActive(String featureName) {
+    @AuraEnabled
+    public static FeatureEvaluationResult evaluate(String featureName) {
+
+        FeatureEvaluationResult result;
 
         if(customPermissions.contains(featureName)){
 
             if(FeatureManagement.checkPermission(featureName)){
-                return new FeatureEvaluationResult(true, featureName, FeatureReason.HAS_CUSTOM_PERMISSION);
+                result = new FeatureEvaluationResult(true, featureName, FeatureReason.HAS_CUSTOM_PERMISSION);
             }
             else{
-                return new FeatureEvaluationResult(false, featureName, FeatureReason.MISSING_CUSTOM_PERMISSION);
+                result = new FeatureEvaluationResult(false, featureName, FeatureReason.MISSING_CUSTOM_PERMISSION);
             }
 
         }
@@ -29,16 +32,19 @@ public with sharing class FeatureFlags {
             if(features.containsKey(featureName)){
                 
                 if(features.get(featureName).Is_Active__c){
-                    return new FeatureEvaluationResult(true, featureName, FeatureReason.CUSTOM_METADATA_TYPE_ENABLED);
+                    result = new FeatureEvaluationResult(true, featureName, FeatureReason.CUSTOM_METADATA_TYPE_ENABLED);
                 }
                 else{
-                    return new FeatureEvaluationResult(false, featureName, FeatureReason.CUSTOM_METADATA_TYPE_DISABLED);
+                    result = new FeatureEvaluationResult(false, featureName, FeatureReason.CUSTOM_METADATA_TYPE_DISABLED);
                 }
 
             }
+            else {
+                result = new FeatureEvaluationResult(false, featureName, FeatureReason.FLAG_NOT_FOUND);
+            }
         }
-        
-        return new FeatureEvaluationResult(false, featureName, FeatureReason.FLAG_NOT_FOUND);
+    
+        return result;
     }
 
     public class FeatureEvaluationResult{
