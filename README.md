@@ -30,7 +30,7 @@ if(flags.evaluate('enhancedQuoteEditor').isEnabled()){
 
 The code works by evaluating (in this order) if:
 
-- The running user has a Custom Permission with a matching name of `enhancedQuoteEditor`
+- The running user has a Custom Permission with a matching name of `enhancedQuoteEditor`. This is done using the standard [`FeatureManagement`](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_class_System_FeatureManagement.htm#apex_System_FeatureManagement_checkPermission) class from Apex
 - A custom metadata type record of the `FeatureFlag__mdt` type matches the name `enhancedQuoteEditor` and has `Is_Active__c` set to `true`
 
 This allows you to configure user-based feature flags (as custom permissions) and global feature flags (as custom metadata types).
