@@ -1,5 +1,11 @@
-FeatureFlags.FeatureEvaluationResult result = FeatureFlags.isActive('enhancedQuoteCalculation');
+//a lot of code goes here
+FeatureFlags flags = new FeatureFlags();
 
-System.debug('The name of the feature is: ' + result.getFeatureName());
-System.debug('Feature is active: ' + result.isActive());
-System.debug('The reason the result is: ' + result.getReason());
+if(flags.evaluate('enhancedQuoteEditor').isEnabled()) {
+    System.debug('enhancedQuoteEditor is isEnabled');    
+}
+else {
+    System.debug('enhancedQuoteEditor is not enabled');
+}
+
+System.debug(flags.evaluate('enhancedQuoteEditor'));

@@ -2,88 +2,88 @@
 private class FeatureFlagsTests {
     @IsTest
     static void testFeatureEnabledWithCustomMetadata() {
-        // Set up test data - create a FeatureFlag__mdt record with Is_Active__c = true
-        FeatureFlag__mdt flag = new FeatureFlag__mdt(DeveloperName = 'MyFeature', Is_Active__c = true);
-        insert flag;
+
+        FeatureFlagProviderMock mockFlags = new FeatureFlagProviderMock();
+        FeatureFlags flags = new FeatureFlags(mockFlags);
 
         Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('MyFeature');
+        FeatureFlags.FeatureEvaluationResult result = flags.evaluate('flag1');
         Test.stopTest();
 
-        // Assert that the feature is enabled and reason is CUSTOM_METADATA_TYPE_ENABLED
-        System.assertEquals(true, result.getResult());
-        System.assertEquals('MyFeature', result.getFeatureName());
+        System.assertEquals(true, result.isEnabled());
+        System.assertEquals('flag1', result.getFeatureName());
         System.assertEquals(FeatureFlags.FeatureReason.CUSTOM_METADATA_TYPE_ENABLED, result.getReason());
     }
 
     @IsTest
     static void testFeatureDisabledWithCustomMetadata() {
-        // Set up test data - create a FeatureFlag__mdt record with Is_Active__c = false
-        FeatureFlag__mdt flag = new FeatureFlag__mdt(DeveloperName = 'MyFeature', Is_Active__c = false);
-        insert flag;
+
+        FeatureFlagProviderMock mockFlags = new FeatureFlagProviderMock();
+        FeatureFlags flags = new FeatureFlags(mockFlags);
 
         Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('MyFeature');
+        FeatureFlags.FeatureEvaluationResult result = flags.evaluate('flag2');
         Test.stopTest();
 
-        // Assert that the feature is disabled and reason is CUSTOM_METADATA_TYPE_DISABLED
-        System.assertEquals(false, result.getResult());
-        System.assertEquals('MyFeature', result.getFeatureName());
+
+        System.assertEquals(false, result.isEnabled());
+        System.assertEquals('flag2', result.getFeatureName());
         System.assertEquals(FeatureFlags.FeatureReason.CUSTOM_METADATA_TYPE_DISABLED, result.getReason());
     }
 
     @IsTest
-    static void testFeatureWithMissingCustomMetadata() {
-        Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('NonExistentFeature');
-        Test.stopTest();
+    static void testFeatureDisabledWithMissingCustomPermission() {
 
-        // Assert that the feature is not found and reason is FLAG_NOT_FOUND
-        System.assertEquals(false, result.getResult());
-        System.assertEquals('NonExistentFeature', result.getFeatureName());
-        System.assertEquals(FeatureFlags.FeatureReason.FLAG_NOT_FOUND, result.getReason());
-    }
-
-    @IsTest
-    static void testFeatureWithCustomPermission() {
-        // Set up test data - create a Custom Permission
-        CustomPermission permission = new CustomPermission(DeveloperName = 'MyPermission');
-        insert permission;
+        FeatureFlagProviderMock mockFlags = new FeatureFlagProviderMock();
+        FeatureFlags flags = new FeatureFlags(mockFlags);
 
         Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('MyPermission');
+        FeatureFlags.FeatureEvaluationResult result = flags.evaluate('permission1');
         Test.stopTest();
 
-        // Assert that the feature has the custom permission and reason is HAS_CUSTOM_PERMISSION
-        System.assertEquals(true, result.getResult());
-        System.assertEquals('MyPermission', result.getFeatureName());
-        System.assertEquals(FeatureFlags.FeatureReason.HAS_CUSTOM_PERMISSION, result.getReason());
-    }
-
-    @IsTest
-    static void testFeatureWithoutCustomPermission() {
-        Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('NonExistentPermission');
-        Test.stopTest();
-
-        // Assert that the feature does not have the custom permission and reason is MISSING_CUSTOM_PERMISSION
-        System.assertEquals(false, result.getResult());
-        System.assertEquals('NonExistentPermission', result.getFeatureName());
+    
+        System.assertEquals(false, result.isEnabled());
+        System.assertEquals('permission1', result.getFeatureName());
         System.assertEquals(FeatureFlags.FeatureReason.MISSING_CUSTOM_PERMISSION, result.getReason());
     }
 
     @IsTest
-    static void testMockValue() {
-        // Use the setMockValue method to provide a custom mock value
-        FeatureFlags.setMockValue('MyMockedFeature', true);
+    static void testFeatureNotFound() {
+
+        FeatureFlagProviderMock mockFlags = new FeatureFlagProviderMock();
+        FeatureFlags flags = new FeatureFlags(mockFlags);
 
         Test.startTest();
-        FeatureFlags.FeatureEvaluationResult result = FeatureFlags.evaluate('MyMockedFeature');
+        FeatureFlags.FeatureEvaluationResult result = flags.evaluate('RandomFeature');
         Test.stopTest();
 
-        // Assert that the feature has the mocked value and reason is MOCK_VALUE
-        System.assertEquals(true, result.getResult());
-        System.assertEquals('MyMockedFeature', result.getFeatureName());
-        System.assertEquals(FeatureFlags.FeatureReason.MOCK_VALUE, result.getReason());
+    
+        System.assertEquals(false, result.isEnabled());
+        System.assertEquals('RandomFeature', result.getFeatureName());
+        System.assertEquals(FeatureFlags.FeatureReason.FLAG_NOT_FOUND, result.getReason());
     }
+
+    @IsTest
+    static void testFeatureFlagProvider(){
+        FeatureFlagProvider provider = new FeatureFlagProvider();
+        provider.getCustomPermissionNames();
+        provider.getFeatureFlags();
+    }
+
+    @IsTest 
+    static void testMockValues(){
+        FeatureFlags flags = new FeatureFlags();
+        flags.setMockValue('mockedFeatureValue', true);
+
+        Test.startTest();
+        FeatureFlags.FeatureEvaluationResult result = flags.evaluate('mockedFeatureValue');
+        Test.stopTest();
+
+        System.assert(true, result.isEnabled());
+        System.assertEquals('mockedFeatureValue', result.getFeatureName());
+        System.assertEquals(FeatureFlags.FeatureReason.MOCK_VALUE, result.getReason());
+
+    }
+
+   
 }

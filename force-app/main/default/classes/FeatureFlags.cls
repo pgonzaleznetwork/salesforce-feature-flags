@@ -1,18 +1,20 @@
 public with sharing class FeatureFlags implements IFeatureFlags {
     
-    private static Map<String,FeatureFlag__mdt> features = FeatureFlag__mdt.getAll();
-    private static Set<String> customPermissions = new Set<String>();
-    private static Map<String,Boolean> mockValues = new Map<String,Boolean>();
+    private Map<String,FeatureFlag__mdt> features; 
+    private Set<String> customPermissionNames; 
+    private Map<String,Boolean> mockValues = new Map<String,Boolean>();
 
-    static{
-        
-        for (CustomPermission permission : [SELECT  DeveloperName FROM CustomPermission]) {
-            customPermissions.add(permission.DeveloperName);
-        }
-    }
     
-    @AuraEnabled
-    public static FeatureEvaluationResult evaluate(String featureName) {
+    public FeatureFlags(IFeatureFlagProvider provider){
+        features = provider.getFeatureFlags();
+        customPermissionNames = provider.getCustomPermissionNames();
+    }
+
+    public FeatureFlags(){
+        this(new FeatureFlagProvider());
+    }
+
+    public FeatureEvaluationResult evaluate(String featureName) {
 
         if(Test.isRunningTest() && mockValues.containsKey(featureName)){
             return new FeatureEvaluationResult(mockValues.get(featureName), featureName, FeatureReason.MOCK_VALUE);
@@ -20,7 +22,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
 
         FeatureEvaluationResult result;
 
-        if(customPermissions.contains(featureName)){
+        if(customPermissionNames.contains(featureName)){
 
             if(FeatureManagement.checkPermission(featureName)){
                 result = new FeatureEvaluationResult(true, featureName, FeatureReason.HAS_CUSTOM_PERMISSION);
@@ -53,7 +55,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
 
 
     @TestVisible
-    private static void setMockValue(String featureName, Boolean value){
+    private void setMockValue(String featureName, Boolean value){
         mockValues.put(featureName, value);
     }
 
@@ -64,7 +66,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
         private String featureName;
         private FeatureReason reason;
 
-        public Boolean getResult(){
+        public Boolean isEnabled(){
             return result;
         }
 
