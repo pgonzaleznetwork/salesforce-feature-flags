@@ -72,10 +72,13 @@ private class FeatureFlagsTests {
 
     @IsTest 
     static void testMockValues(){
-        FeatureFlags flags = new FeatureFlags();
-        flags.setMockValue('mockedFeatureValue', true);
+
+        FeatureFlags.setMockValue('mockedFeatureValue', true);
+ 
 
         Test.startTest();
+
+        FeatureFlags flags = new FeatureFlags();
         FeatureFlags.FeatureEvaluationResult result = flags.evaluate('mockedFeatureValue');
         Test.stopTest();
 
