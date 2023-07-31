@@ -49,12 +49,12 @@ public with sharing class FeatureFlags {
 
     public class FeatureEvaluationResult{
 
-        private Boolean isActive;
+        private Boolean result;
         private String featureName;
         private FeatureReason reason;
 
-        public Boolean isActive(){
-            return isActive;
+        public Boolean getResult(){
+            return result;
         }
 
         public String getFeatureName(){
@@ -66,8 +66,8 @@ public with sharing class FeatureFlags {
         }
 
 
-        public FeatureEvaluationResult(Boolean isActive, String featureName, FeatureReason reason){
-            this.isActive = isActive;
+        public FeatureEvaluationResult(Boolean result, String featureName, FeatureReason reason){
+            this.result = result;
             this.featureName = featureName;
             this.reason = reason;
         }
