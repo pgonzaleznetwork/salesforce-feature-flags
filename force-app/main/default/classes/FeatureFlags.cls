@@ -1,8 +1,10 @@
-public with sharing class FeatureFlags {
+public with sharing class FeatureFlags implements IFeatureFlags {
     
     private static Map<String,FeatureFlag__mdt> features = FeatureFlag__mdt.getAll();
 
     private static Set<String> customPermissions = new Set<String>();
+
+    private static Map<String,Boolean> mockValues = new Map<String,Boolean>();
 
     static{
         
@@ -13,6 +15,10 @@ public with sharing class FeatureFlags {
     
     @AuraEnabled
     public static FeatureEvaluationResult evaluate(String featureName) {
+
+        if(Test.isRunningTest() && mockValues.containsKey(featureName)){
+            return new FeatureEvaluationResult(mockValues.get(featureName), featureName, FeatureReason.MOCK_VALUE);
+        }
 
         FeatureEvaluationResult result;
 
@@ -47,6 +53,12 @@ public with sharing class FeatureFlags {
         return result;
     }
 
+    @TestVisible
+    private static void setMockValue(String featureName, Boolean value){
+        mockValues.put(featureName, value);
+    }
+
+
     public class FeatureEvaluationResult{
 
         private Boolean result;
@@ -78,7 +90,8 @@ public with sharing class FeatureFlags {
         MISSING_CUSTOM_PERMISSION, 
         CUSTOM_METADATA_TYPE_ENABLED,
         CUSTOM_METADATA_TYPE_DISABLED,
-        FLAG_NOT_FOUND
+        FLAG_NOT_FOUND,
+        MOCK_VALUE
     }
 
 }
