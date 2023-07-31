@@ -6,7 +6,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
 
     static{
         
-        for (CustomPermission permission : [SELECT Id, DeveloperName FROM CustomPermission]) {
+        for (CustomPermission permission : [SELECT  DeveloperName FROM CustomPermission]) {
             customPermissions.add(permission.DeveloperName);
         }
     }
