@@ -1,9 +1,7 @@
 public with sharing class FeatureFlags implements IFeatureFlags {
     
     private static Map<String,FeatureFlag__mdt> features = FeatureFlag__mdt.getAll();
-
     private static Set<String> customPermissions = new Set<String>();
-
     private static Map<String,Boolean> mockValues = new Map<String,Boolean>();
 
     static{
@@ -52,6 +50,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
     
         return result;
     }
+
 
     @TestVisible
     private static void setMockValue(String featureName, Boolean value){
