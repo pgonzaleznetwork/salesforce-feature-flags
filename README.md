@@ -63,7 +63,7 @@ This information can be useful for logging and troubleshooting.
 
 ### Testing
 
-#### Simple brut force approach
+#### Simple brute force approach
 
 If you simply want to set the value of a flag to `true` or `false` at test time, without relaying on existing custom permissions or metadata types, simply use the static `FeatureFlags.setMockValue('mockedFeatureValue', true);` method, as follows
 
