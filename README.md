@@ -2,6 +2,15 @@
 
 Simple framework for using feature flags in apex driven by Custom Permissions and Custom Metadata Types. 
 
+## Table of Contents
+
+* [`FeatureFlags` class](#featureflags-class)
+* [Custom Permissions and Metadata Types](#custom-permissions-and-metadata-types)
+* [Info with `FeatureEvaluationResult`](#info-with-featureevaluationresult)
+* [In LWC](#in-lwc)
+* [Testing](#testing)
+
+
 ### `FeatureFlags` class
 
 The main entry point is the `FeatureFlags` class, which is meant to be used as follows
