@@ -53,6 +53,11 @@ public with sharing class FeatureFlags implements IFeatureFlags {
         return result;
     }
 
+    @AuraEnabled
+    public static Boolean lwcEvaluate(String featureName){
+        return new FeatureFlags().evaluate(featureName).isEnabled();
+    }
+
 
     @TestVisible
     private static void setMockValue(String featureName, Boolean value){

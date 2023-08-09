@@ -61,6 +61,31 @@ System.debug(result);
 
 This information can be useful for logging and troubleshooting. 
 
+### In LWC
+
+To use a feature flag in LWC, use the static method `lwcEvaluate`, which simply returns `true` or `false`. For example
+
+```javascript
+import { LightningElement } from 'lwc';
+import lwcEvaluate from '@salesforce/apex/FeatureFlags.lwcEvaluate';
+
+export default class FlagsInLWC extends LightningElement {
+
+
+    async connectedCallback() {
+        
+        let featureNewUIComponents = await lwcEvaluate({ featureName: 'featureNewUIComponents' });
+        
+        if(featureNewUIComponents){
+            console.log('featureNewUIComponents is enabled. Show the new UI components');
+        }
+        else{ 
+            console.log('featureNewUIComponents is disabled. Show the old UI components');
+        }
+    }
+}
+```
+
 ### Testing
 
 #### Simple brut force approach
