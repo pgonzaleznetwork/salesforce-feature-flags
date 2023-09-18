@@ -53,7 +53,7 @@ public with sharing class FeatureFlags implements IFeatureFlags {
         return result;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Boolean lwcEvaluate(String featureName){
         return new FeatureFlags().evaluate(featureName).isEnabled();
     }
